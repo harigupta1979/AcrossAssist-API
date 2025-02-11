@@ -34,7 +34,7 @@ namespace AcrossAssist_API.JWT
                         new Claim("IS_ADMIN", commonList.Data.Rows[0]["IS_ADMIN"].ToString()),
                         new Claim("DEALER_ID", commonList.Data.Rows[0]["DEALER_ID"].ToString()),
                     }),
-                    Expires = DateTime.UtcNow.AddMinutes(10),
+                    Expires = DateTime.UtcNow.AddDays(1),
                     SigningCredentials = new SigningCredentials(
                     new SymmetricSecurityKey(tokenKey), SecurityAlgorithms.HmacSha256Signature)
             };
