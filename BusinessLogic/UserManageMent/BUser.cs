@@ -62,7 +62,7 @@ namespace BusinessLogic.UserManagement
                         MaillerBody = MaillerBody.Replace("@UserName@", obj.UserName);
                         MaillerBody = MaillerBody.Replace("@Password@", obj.DecptPassword);
                         MaillerBody = MaillerBody.Replace("@UrlLink@", this._configuration.AppKey("businessUrl") + "resetpassword?u=" + obj.UserName);
-                        mailler.SendMail(obj.EmailAddress, "", 10001, "Reset Password", MaillerBody);
+                       // mailler.SendMail(obj.EmailAddress, "", 10001, "Reset Password", MaillerBody);
                     }
                     commonIUD.AdditionalParameter = "";
 
