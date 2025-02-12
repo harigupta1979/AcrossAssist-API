@@ -32,6 +32,7 @@ namespace BusinessLogic.UserManagement
             {
               
                 if (obj.UserId != null && obj.UserId != 0) { obj.Action = "update"; } else { obj.Action = "insert"; obj.UserId = 0; }
+                obj.Password = SecurityEncy.PwdEncryptDecrypt(SecurityEncy.Decrypt(obj.Password), "E");
                 var t1 = Task.Run(() => dbUser.PostdbUser(obj));
                 await Task.WhenAll(t1);
                 Recid = t1.Status == TaskStatus.RanToCompletion ? t1.Result : null;

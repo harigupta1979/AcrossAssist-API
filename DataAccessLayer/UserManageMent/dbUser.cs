@@ -30,7 +30,7 @@ namespace DataAccessLayer.UserManagement
                 DB.Parameters.Add(new SqlParameter("@RoleId", obj.RoleId));
                 DB.Parameters.Add(new SqlParameter("@FirstName", obj.FirstName == null ? "" : obj.FirstName.Trim()));
                 DB.Parameters.Add(new SqlParameter("@LastName", obj.LastName == null ? "" : obj.LastName.Trim()));
-                DB.Parameters.Add(new SqlParameter("@UserName", obj.UserName == null ? "" : obj.UserName.Trim()));
+                DB.Parameters.Add(new SqlParameter("@UserName", obj.EmailAddress == null ? "" : obj.EmailAddress.Trim()));
                 DB.Parameters.Add(new SqlParameter("@EmailAddress", obj.EmailAddress == null ? "" : obj.EmailAddress.Trim()));
                 DB.Parameters.Add(new SqlParameter("@Password", obj.Password == null ? "" : obj.Password.Trim()));
                 DB.Parameters.Add(new SqlParameter("@Address", obj.Address == null ? "" : obj.Address.Trim()));
@@ -48,7 +48,7 @@ namespace DataAccessLayer.UserManagement
                 DB.Parameters.Add(new SqlParameter("@DesignationId", obj.DesignationId));
                 DB.Parameters.Add(new SqlParameter("@ReportingPersonId", obj.ReportingPersonId));
                 DB.Parameters.Add(new SqlParameter("@IspwdChange", false));
-                DB.Parameters.Add(new SqlParameter("@PwdExpireDays", obj.PwdExpireDays));
+                DB.Parameters.Add(new SqlParameter("@PwdExpireDays", 45));
                 DB.Parameters.Add(new SqlParameter("@IsPwdExpired", false));
                 DB.Parameters.Add(new SqlParameter("@IsUserLocked", false));
                 return DB.ExecuteScalar("usp_Insert_Update_User");
