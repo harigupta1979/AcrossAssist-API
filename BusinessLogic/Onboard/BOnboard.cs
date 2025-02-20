@@ -15,6 +15,7 @@ using Microsoft.Reporting.NETCore;
 using System.Net;
 using Core.Module.Dealer;
 using System.Collections.Generic;
+using DataAccessLayer.DataAccess;
 
 namespace BusinessLogic.Onboard
 {
@@ -51,108 +52,26 @@ namespace BusinessLogic.Onboard
                     commonIUD.FinalMode = DBReturnInsertUpdateDelete.INSERT;
                     if (obj.OnBoardId != null && obj.OnBoardId != 0) { commonIUD.FinalMode = DBReturnInsertUpdateDelete.UPDATE; }
                     commonIUD.Recid = Recid;
-                    if (obj.Action == "insert" && Recid != null && Recid != 0)
-                    {
-                        try
-                        {
-                            //Mailler mailler = new Mailler(this._configuration);
-                            //var fPath = Path.Combine(Directory.GetCurrentDirectory(), "MailerContent/WelcomeVender.txt");
-                            //string MaillerBody = System.IO.File.ReadAllText(fPath);
-                            //MaillerBody = MaillerBody.Replace("@BusinessPartnerName@", obj.OnBoardName);
-                            //MaillerBody = MaillerBody.Replace("@UrlLink@", this._configuration.AppKey("businessUrl") + "business?" + SecurityEncy.Encrypt("Onboard=" + Recid + "&Stage=Client"));
-                            //mailler.SendMail(obj.EmailId, "", 10001, "Dealer onboarding-ICICI Lombard", MaillerBody);
-                            Mailler mailler = new Mailler(this._configuration);
-                            var fPath = Path.Combine(Directory.GetCurrentDirectory(), "MailerContent/WelcomeVender.html");
-                            string MaillerBody = System.IO.File.ReadAllText(fPath);
-                            MaillerBody = MaillerBody.Replace("@BusinessPartnerName@", obj.OnBoardName);
-                            MaillerBody = MaillerBody.Replace("@UrlLink@", this._configuration.AppKey("businessUrl") + "business?" + SecurityEncy.Encrypt("Onboard=" + Recid + "&Stage=Client"));
-                            mailler.SendMail(obj.EmailId, "", 10001, "ICICI: Marketing Firm Onboarding - NO REPLY", MaillerBody);
-                            dbLogger.PostEmailLog("BOnboard", MaillerBody, "PostOnboard", 10001, obj.EmailId,"Onboard", true);
-                        }
-                        catch (Exception ex)
-                        {
-                            dbLogger.PostErrorLog("BOnboard", ex.Message.ToString(), "OnboardingMail", 10001, "Admin", true);
-                            return commonIUD;
-                        }
-                    }
-                    if (obj.Action == "update" && Recid != null && Recid != 0 && obj.OnBoardAction == "Approve")
-                    {
-                        try
-                        {
-                            obj.ApprovedBy = obj.CreatedBy;
-                            //var t2 = Task.Run(() => dbOnboard.PostdbOnboardApproval(obj));
-                            //await Task.WhenAll(t2);
-                            //dynamic status = t2.Status == TaskStatus.RanToCompletion ? t2.Result : null;
-
-                            //Mailler mailler = new Mailler(this._configuration);
-                            //var fPath = Path.Combine(Directory.GetCurrentDirectory(), "MailerContent/WelcomeVenderLogin.txt");
-                            //string MaillerBody = System.IO.File.ReadAllText(fPath);
-                            //MaillerBody = MaillerBody.Replace("@Name@", obj.OnBoardName);
-                            //MaillerBody = MaillerBody.Replace("@UrlLink@", this._configuration.AppKey("businessUrl")+ "Auth/Login");
-                            //MaillerBody = MaillerBody.Replace("@Password@", "12345");
-                            //MaillerBody = MaillerBody.Replace("@UserName@", obj.EmailId);
-                            //mailler.SendMail(obj.EmailId, "", 10001, "Dealer onboarding-ICICI Lombard Access Details", MaillerBody);
-
-                            //COMMENT BY ANISH 
-                            if (!Convert.ToBoolean(obj.ISAPPROVED))
-                            {
-                                // BDealer bDealer = new BDealer(this._configuration);
-                                var t4 = Task.Run(() => SendDealerAgreement(Recid, "OnBoardId"));
-                                await Task.WhenAll(t4);
-                                dynamic argrrmentStatus = t4.Status == TaskStatus.RanToCompletion ? t4.Result : null;
-                            }
-                        }
-
-                        catch (Exception ex)
-                        {
-                            dbLogger.PostErrorLog("BOnboard", ex.Message.ToString(), "ApproveMail", 10001, "Admin", true);
-                            return commonIUD;
-                        }
-                        //Mailler mailler = new Mailler(this._configuration);
-                        //var fPath = Path.Combine(Directory.GetCurrentDirectory(), "MailerContent/WelcomeVenderLogin.html");
-                        //string MaillerBody = System.IO.File.ReadAllText(fPath);
-                        //MaillerBody = MaillerBody.Replace("@Name@", obj.OnBoardName);
-                        //MaillerBody = MaillerBody.Replace("@UrlLink@", this._configuration.AppKey("businessUrl") + "Auth/Login");
-                        //MaillerBody = MaillerBody.Replace("@Password@", "12345");
-                        //MaillerBody = MaillerBody.Replace("@UserName@", obj.EmailId);
-                        //mailler.SendMail(obj.EmailId, "", 10001, "ICICI: Marketing Firm Access Details", MaillerBody);
-                    }
-                    if (obj.Action == "update" && Recid != null && Recid != 0 && obj.OnBoardAction == "ReferBack")
-                    {
-                        try
-                        {
-                            obj.ApprovedBy = obj.CreatedBy;
-                            //var t3 = Task.Run(() => dbOnboard.PostdbOnboardApproval(obj));
-                            //await Task.WhenAll(t3);
-                            //dynamic status = t3.Status == TaskStatus.RanToCompletion ? t3.Result : null;
-
-                            //Mailler mailler = new Mailler(this._configuration);
-                            //var fPath = Path.Combine(Directory.GetCurrentDirectory(), "MailerContent/WelcomeVenderReject.txt");
-                            //string MaillerBody = System.IO.File.ReadAllText(fPath);
-                            //MaillerBody = MaillerBody.Replace("@BusinessPartnerName@", obj.OnBoardName);
-                            //MaillerBody = MaillerBody.Replace("@UrlLink@", this._configuration.AppKey("businessUrl") + "business?" + SecurityEncy.Encrypt("Onboard=" + Recid + "&Stage=Client"));
-                            //mailler.SendMail(obj.EmailId, "", 10001, "Dealer onboarding-ICICI Lombard", MaillerBody);
-                            Mailler mailler = new Mailler(this._configuration);
-                            var fPath = Path.Combine(Directory.GetCurrentDirectory(), "MailerContent/WelcomeVenderReject.html");
-                            string MaillerBody = System.IO.File.ReadAllText(fPath);
-                            MaillerBody = MaillerBody.Replace("@BusinessPartnerName@", obj.OnBoardName);
-                            MaillerBody = MaillerBody.Replace("@ApprovalRemarks@", obj.ApprovalRemarks);
-                            MaillerBody = MaillerBody.Replace("@UrlLink@", this._configuration.AppKey("businessUrl") + "business?" + SecurityEncy.Encrypt("Onboard=" + Recid + "&Stage=Client"));
-                            mailler.SendMail(obj.EmailId, "", 10001, "ICICI: Marketing Firm Refer Back Onboarding - NO REPLY", MaillerBody);
-                            dbLogger.PostEmailLog("BOnboard", MaillerBody, "PostOnboard", 10001, obj.EmailId, "Onboard", true);
-                        }
-                        catch (Exception ex)
-                        {
-                            dbLogger.PostErrorLog("BOnboard", ex.Message.ToString(), "ReferBackMail", 10001, "Admin", true);
-                            return commonIUD;
-                        }
-                    }
-                    if (obj.Action == "update" && obj.OnBoardAction == "Approve")
-                    { commonIUD.Message = "Approve Successfully!"; }
-                    else if (obj.Action == "update" && obj.OnBoardAction == "ReferBack")
-                    { commonIUD.Message = "ReferBack Successfully!"; }
-                    else if (obj.Action == "update" && obj.Action == "Client")
-                    { commonIUD.Message = "Submit Successfully!"; }
+                    //if (obj.Action == "insert" && Recid != null && Recid != 0)
+                    //{
+                    //    try
+                    //    {
+                    //        Mailler mailler = new Mailler(this._configuration);
+                    //        var fPath = Path.Combine(Directory.GetCurrentDirectory(), "MailerContent/WelcomeVender.html");
+                    //        string MaillerBody = System.IO.File.ReadAllText(fPath);
+                    //        MaillerBody = MaillerBody.Replace("@BusinessPartnerName@", obj.OnBoardName);
+                    //        MaillerBody = MaillerBody.Replace("@UrlLink@", this._configuration.AppKey("businessUrl") + "business?" + SecurityEncy.Encrypt("Onboard=" + Recid + "&Stage=Client"));
+                    //        mailler.SendMail(obj.EmailId, "", 10001, "ICICI: Marketing Firm Onboarding - NO REPLY", MaillerBody);
+                    //        dbLogger.PostEmailLog("BOnboard", MaillerBody, "PostOnboard", 10001, obj.EmailId,"Onboard", true);
+                    //    }
+                    //    catch (Exception ex)
+                    //    {
+                    //        dbLogger.PostErrorLog("BOnboard", ex.Message.ToString(), "OnboardingMail", 10001, "Admin", true);
+                    //        return commonIUD;
+                    //    }
+                    //}
+                    if (obj.Action == "update")
+                    { commonIUD.Message = "Updated Successfully!"; }
                     else if (obj.Action == "insert")
                     { commonIUD.Message = "Data Inserted Successfully!"; obj.OnBoardId = 0; }
                     else
@@ -179,7 +98,66 @@ namespace BusinessLogic.Onboard
                 return commonIUD;
             }
         }
+        public async Task<CommonIUD> PostOnboardDocument(List<BusinessPartnerDocumentClass> obj1)
+        {
+            commonIUD = new CommonIUD();
+            var Recid = (dynamic)null;
+            try
+            {
+                MongoDBCRUD mongo = new MongoDBCRUD(this._configuration);
+                if (obj1.Count > 0)
+                {
+                    foreach (var obj in obj1)
+                    {
+                        if (string.IsNullOrEmpty(obj.Action))
+                        {
+                            if (obj.DocumentId == null && obj.DocumentId == 0) { obj.Action = "update"; } else { obj.Action = "insert"; }
+                        }
+                        if (obj.Action == "insert")
+                        {
+                            obj.DocumentId = 0;
+                        }
+                        var t1 = Task.Run(() => mongo.insert(obj));
+                        await Task.WhenAll(t1);
+                        Recid = t1.Status == TaskStatus.RanToCompletion ? t1.Result : null;
 
+                        obj.MongodbId = Recid;
+                        var t2 = Task.Run(() => dbOnboard.PostdbOnboarDocument(obj));
+                        await Task.WhenAll(t2);
+                        Recid = t2.Status == TaskStatus.RanToCompletion ? t2.Result : null;
+
+                        if (Recid != null && Recid != 0)
+                        {
+                            commonIUD.FinalMode = DBReturnInsertUpdateDelete.INSERT;
+                            if (obj.DocumentId != null && obj.DocumentId != 0) { commonIUD.FinalMode = DBReturnInsertUpdateDelete.UPDATE; }
+                            commonIUD.Recid = Recid;
+                            if (obj.Action == "update") { commonIUD.Message = "Document Updated Successfully!"; } else { commonIUD.Message = "Document Uploaded Successfully!"; obj.DocumentId = 0; }
+                            commonIUD.AdditionalParameter = "";
+                            //return commonIUD;
+                        }
+                        else
+                        {
+                            //----------- Remove file in mongo
+                            var t3 = Task.Run(() => mongo.delete(obj));
+                            await Task.WhenAll(t3);
+                            commonIUD.FinalMode = DBReturnInsertUpdateDelete.ERROR;
+                            //return commonIUD;
+                        }
+                    }
+                }
+                return commonIUD;
+            }
+            catch (Exception ex)
+            {
+                commonIUD.FinalMode = DBReturnInsertUpdateDelete.ERROR;
+                if (ex.Message.Contains("UNIQUE KEY"))
+                {
+                    commonIUD.Message = "Cannot insert duplicate record.";
+                }
+                dbLogger.PostErrorLog("BClient", ex.Message.ToString(), "PostClientDocument", 10001, "Admin", true);
+                return commonIUD;
+            }
+        }
         public async Task<CommonList> GenerateOtp(OnboardOtp obj)
         {
             objList = new CommonList();

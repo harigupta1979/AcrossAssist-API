@@ -17,36 +17,16 @@ namespace Core.Module.Onboard
         public Nullable<Int32> StateId { get; set; }
         public Nullable<Int32> CityId { get; set; }
         public Nullable<Int32> LocationId { get; set; }
-        public string AccessModule { get; set; }
         public string PANNumber { get; set; }
         public string TANNumber { get; set; }
         public string GSTNumber { get; set; }
-        public Nullable<Int64> ApprovedBy { get; set; }
-        public string ApprovalRemarks { get; set; }
-        public string OnBoardAction { get; set; }
-        public string ApprovalAction { get; set; }
-        public Nullable<bool> IsCustomerSubmited { get; set; }
+        public string MSMENumber { get; set; }
         public string AccountName { get; set; }
         public string AccountNo { get; set; }
         public string IFSCCode { get; set; }
         public Nullable<Int64> BankId { get; set; }
         public Nullable<Int64> AccountTypeId { get; set; }
-        public Nullable<Int64> CompanyTypeId { get; set; }
-        public string StructureName { get; set; }
-        public Nullable<Int64> StructureId { get; set; }
-        public string ContactPersonName { get; set; }
-        public string ContactPersonMobileNo { get; set; }
-        public string ContactPersonEmailId { get; set; }
 
-        public Nullable<bool> IsPan { get; set; }
-        public Nullable<bool> IsTin { get; set; }
-        public Nullable<bool> IsGst { get; set; }
-        public string AuthorisedPerson { get; set; }
-        public Nullable<bool> IsGstDeclare { get; set; }
-        public Nullable<bool> IsPanDeclare { get; set; }
-        public Nullable<bool> IsTinDeclare { get; set; }
-        public Nullable<bool> IsLowTDS { get; set; }
-        public Nullable<bool> ISAPPROVED { get; set; }
     }
     public class OnboardOtp
     {

@@ -14,6 +14,8 @@ using BusinessLogic.Onboard;
 using System.IO;
 using ExcelDataReader;
 using System.Net.Http;
+using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace AcrossAssist_API.Controllers.OnBoard
 {
@@ -78,6 +80,29 @@ namespace AcrossAssist_API.Controllers.OnBoard
             {
                 dbLogger.PostErrorLog("OnBoard", ex.Message.ToString(), "PostOnboard", 10001, "Admin", true);
                 return Ok(Newtonsoft.Json.JsonConvert.SerializeObject(common));
+            }
+        }
+        [HttpPost("PostOnboardDocument")]
+        public async Task<Object> PostOnboardDocument()
+        {
+            DataSet _ds = new DataSet();
+            CommonListDataSet _objList = new CommonListDataSet();
+
+            try
+            {
+                System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
+                List<BusinessPartnerDocumentClass> obj;
+
+                obj = JsonConvert.DeserializeObject<List<BusinessPartnerDocumentClass>>(Request.Form["multifile"].ToString());
+                var t1 = Task.Run(() => bOnboard.PostOnboardDocument(obj));
+                await Task.WhenAll(t1);
+                common = t1.Status == TaskStatus.RanToCompletion ? t1.Result : common;
+                return Ok(Newtonsoft.Json.JsonConvert.SerializeObject(common));
+            }
+            catch (Exception ex)
+            {
+                dbLogger.PostErrorLog("Client", ex.Message.ToString(), "PostClientDocument", 10001, "Admin", true);
+                return Ok();
             }
         }
 

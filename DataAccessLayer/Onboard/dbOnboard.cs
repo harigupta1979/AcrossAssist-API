@@ -32,39 +32,20 @@ namespace DataAccessLayer.Onboard
                 DB.Parameters.Add(new SqlParameter("@CountryId", obj.CountryId));
                 DB.Parameters.Add(new SqlParameter("@StateId", obj.StateId));
                 DB.Parameters.Add(new SqlParameter("@CityId", obj.CityId));
+                DB.Parameters.Add(new SqlParameter("@LocationId", obj.LocationId));
                 DB.Parameters.Add(new SqlParameter("@PinCode", obj.PinCode));
+                DB.Parameters.Add(new SqlParameter("@MSMENumber", obj.MSMENumber == null ? "" : obj.MSMENumber.Trim()));
                 DB.Parameters.Add(new SqlParameter("@GSTNumber", obj.GSTNumber == null ? "" : obj.GSTNumber.Trim()));
                 DB.Parameters.Add(new SqlParameter("@PANNumber", obj.PANNumber == null ? "" : obj.PANNumber.Trim()));
-                DB.Parameters.Add(new SqlParameter("@TANNumber", obj.TANNumber == null ? "" : obj.TANNumber.Trim()));
-                if (obj.OnBoardAction == "Client" && obj.Action == "update")
-                {
-                    DB.Parameters.Add(new SqlParameter("@IsCustomerSubmited", obj.IsCustomerSubmited == null ? false : obj.IsCustomerSubmited));
-                }
-                DB.Parameters.Add(new SqlParameter("@OnBoardAction", obj.OnBoardAction));
                 DB.Parameters.Add(new SqlParameter("@BankId", obj.BankId));
                 DB.Parameters.Add(new SqlParameter("@AccountTypeId", obj.AccountTypeId));
                 DB.Parameters.Add(new SqlParameter("@AccountName", obj.AccountName));
-                DB.Parameters.Add(new SqlParameter("@Structure", obj.StructureName));
                 DB.Parameters.Add(new SqlParameter("@AccountNo", obj.AccountNo));
                 DB.Parameters.Add(new SqlParameter("@IFSCCode", obj.IFSCCode));
-                DB.Parameters.Add(new SqlParameter("@ApprovalRemarks", obj.ApprovalRemarks == null ? "" : obj.ApprovalRemarks.Trim())); 
                 DB.Parameters.Add(new SqlParameter("@CreatedBy", obj.CreatedBy));
                 DB.Parameters.Add(new SqlParameter("@UpdatedBy", obj.UpdatedBy));
                 DB.Parameters.Add(new SqlParameter("@IpAddress", obj.IpAddress)); 
                 DB.Parameters.Add(new SqlParameter("@Action", obj.Action.ToLower()));
-                DB.Parameters.Add(new SqlParameter("@StructureId", obj.StructureId));
-                DB.Parameters.Add(new SqlParameter("@CompanyTypeId", obj.CompanyTypeId));
-                DB.Parameters.Add(new SqlParameter("@ContactPersonName", obj.ContactPersonName==null?"":obj.ContactPersonName.Trim()));
-                DB.Parameters.Add(new SqlParameter("@ContactPersonMobileNo", obj.ContactPersonMobileNo==null?"":obj.ContactPersonMobileNo.Trim()));
-                DB.Parameters.Add(new SqlParameter("@ContactPersonEmailId", obj.ContactPersonEmailId==null?"": obj.ContactPersonEmailId.Trim()));
-                DB.Parameters.Add(new SqlParameter("@IsPan", obj.IsPan));
-                DB.Parameters.Add(new SqlParameter("@IsTin", obj.IsTin));
-                DB.Parameters.Add(new SqlParameter("@IsGst", obj.IsGst));
-                DB.Parameters.Add(new SqlParameter("@AuthorisedPerson", obj.AuthorisedPerson == null ? "" : obj.AuthorisedPerson.Trim()));
-                DB.Parameters.Add(new SqlParameter("@IsPanDeclare", obj.IsPanDeclare));
-                DB.Parameters.Add(new SqlParameter("@IsTinDeclare", obj.IsTinDeclare));
-                DB.Parameters.Add(new SqlParameter("@IsGstDeclare", obj.IsGstDeclare));
-                DB.Parameters.Add(new SqlParameter("@IsLowTDS", obj.IsLowTDS));
                 return DB.ExecuteScalar("usp_Insert_Update_Onboard");
 
             }

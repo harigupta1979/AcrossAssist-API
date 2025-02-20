@@ -42,12 +42,14 @@ namespace BusinessLogic
                     if(dt.Rows[0]["IS_USER_LOCKED"].ToString() == "True")
                     {
                         objList.Message = "UserAccountLocked";
+                        objList.FinalMode = DBReturnGridRecord.RecordNotFound;
                     }
                     else
                     {
                         objList.Message = "";
+                        objList.FinalMode = DBReturnGridRecord.RecordFound;
                     }
-                    objList.FinalMode = DBReturnGridRecord.RecordFound;
+                   
                     objList.Data = dt;
                     objList.Count = dt.Rows.Count;
                     objList.AdditionalParameter = "";
