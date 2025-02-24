@@ -105,6 +105,50 @@ namespace AcrossAssist_API.Controllers.OnBoard
                 return Ok();
             }
         }
+        [HttpPost("DeleteOnboardDocument")]
+        public async Task<Object> DeleteOnboardDocument([FromBody]  BusinessPartnerDocumentClass obj)
+        {
+            DataSet _ds = new DataSet();
+            CommonListDataSet _objList = new CommonListDataSet();
+
+            try
+            {
+                
+                var t1 = Task.Run(() => bOnboard.DeleteOnboardDocument(obj));
+                await Task.WhenAll(t1);
+                common = t1.Status == TaskStatus.RanToCompletion ? t1.Result : common;
+                return Ok(Newtonsoft.Json.JsonConvert.SerializeObject(common));
+            }
+            catch (Exception ex)
+            {
+                dbLogger.PostErrorLog("Client", ex.Message.ToString(), "PostClientDocument", 10001, "Admin", true);
+                return Ok();
+            }
+        }
+        [HttpGet("GetOnboardDocument")]
+        public async Task<IActionResult> GetOnboardDocument([FromQuery] int id)
+        {
+            
+            DataSet _ds = new DataSet();
+            CommonListDataSet _objList = new CommonListDataSet();
+
+            try
+            {
+
+                OnboardDocSearch obj = new OnboardDocSearch();
+                obj.OnBoardId = id;
+
+                var t1 = Task.Run(() => bOnboard.GetOnboardDocumentList(obj));
+                await Task.WhenAll(t1);
+                objList = t1.Status == TaskStatus.RanToCompletion ? t1.Result : objList;
+                return Ok(Newtonsoft.Json.JsonConvert.SerializeObject(objList));
+            }
+            catch (Exception ex)
+            {
+                dbLogger.PostErrorLog("Client", ex.Message.ToString(), "PostClientDocument", 10001, "Admin", true);
+                return Ok();
+            }
+        }
 
         [HttpPost("GenerateOtp")]
         public async Task<IActionResult> GenerateOtp([FromBody] OnboardOtp obj)

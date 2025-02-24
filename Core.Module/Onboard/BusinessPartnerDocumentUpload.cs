@@ -18,6 +18,13 @@ namespace Core.Module.Onboard
         public string MongodbId { get; set; }
         public Nullable<Int64> DocumentTypeId { get; set; }
     }
+    public class DocumentResponse
+    {
+        public string Id { get; set; }
+        public long OnBoardId { get; set; }
+        public string DealerDocName { get; set; }
+        public string DealerDoc { get; set; }
+    }
     public class OnboardView : commonSearchClass
     {
         public string MongoId { get; set; }

@@ -16,6 +16,8 @@ using System.Net;
 using Core.Module.Dealer;
 using System.Collections.Generic;
 using DataAccessLayer.DataAccess;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
 
 namespace BusinessLogic.Onboard
 {
@@ -145,6 +147,119 @@ namespace BusinessLogic.Onboard
                         }
                     }
                 }
+                return commonIUD;
+            }
+            catch (Exception ex)
+            {
+                commonIUD.FinalMode = DBReturnInsertUpdateDelete.ERROR;
+                if (ex.Message.Contains("UNIQUE KEY"))
+                {
+                    commonIUD.Message = "Cannot insert duplicate record.";
+                }
+                dbLogger.PostErrorLog("BClient", ex.Message.ToString(), "PostClientDocument", 10001, "Admin", true);
+                return commonIUD;
+            }
+        }
+        public async Task<CommonList> GetOnboardDocumentList(OnboardDocSearch obj)
+        {
+            objList = new CommonList();
+            DataTable dt;
+            dbCommon = new dbCommon(this._configuration);
+            MongoDBCRUD mongo = new MongoDBCRUD(this._configuration);
+            try
+            {
+                QueryBuilder queryBuilder = new QueryBuilder();
+
+                var t1 = Task.Run(() => queryBuilder.BuildQuerySearch(obj));
+                await Task.WhenAll(t1);
+                string WhereCond = t1.Status == TaskStatus.RanToCompletion ? t1.Result : null;
+
+                var t2 = Task.Run(() => dbCommon.DynamicQuery("onboardDocument", WhereCond));
+                await Task.WhenAll(t2);
+                dt = t2.Status == TaskStatus.RanToCompletion ? t2.Result : null;
+
+                if (dt != null)
+                {
+                    if (dt.Rows.Count > 0)
+                    {
+                        if (!dt.Columns.Contains("DocumentBas64"))
+                        {
+                            dt.Columns.Add("DocumentBas64", typeof(string)); 
+                        }
+
+
+                        foreach (DataRow dr in dt.Rows) {
+                            BusinessPartnerDocumentClass onboarddocClass = new BusinessPartnerDocumentClass();
+                            commonIUD = new CommonIUD();
+                            onboarddocClass.MongodbId = Convert.ToString(dr["MongodbId"]);
+                        
+                            var t3 = Task.Run(() => mongo.select(onboarddocClass));
+                            await Task.WhenAll(t3);
+                          var  resresult = t3.Status == TaskStatus.RanToCompletion ? t3.Result : null;
+                            //if (resresult != null && resresult.Length > 0)
+                            //{
+                            //    var jsonres = JsonConvert.DeserializeObject<DocumentResponse>(resresult[3].value);
+                            dr["DocumentBas64"] = resresult[3];
+                            //}
+
+                        }
+                        objList.FinalMode = DBReturnGridRecord.RecordFound;
+                        objList.Data = dt;
+                        objList.Count = dt.Rows.Count;
+                        objList.Message = "";
+                        objList.AdditionalParameter = "";
+                        return objList;
+                    }
+                }
+                return objList;
+            }
+            catch (Exception ex)
+            {
+                dbLogger.PostErrorLog("BOnboard", ex.Message.ToString(), "GetOnboardApprovalList", 10001, "Admin", true);
+                return objList;
+            }
+        }
+        public async Task<CommonIUD> DeleteOnboardDocument(BusinessPartnerDocumentClass obj)
+        {
+            commonIUD = new CommonIUD();
+            var Recid = (dynamic)null;
+            try
+            {
+                MongoDBCRUD mongo = new MongoDBCRUD(this._configuration);
+
+                if ((obj.DocumentId == null  || obj.DocumentId == 0) || (obj.MongodbId==null || obj.MongodbId ==""))
+                {
+                    commonIUD.FinalMode = DBReturnInsertUpdateDelete.ERROR;
+                    commonIUD.Message = "not found!";
+                }
+                else
+                {
+                    obj.Action = "delete";
+
+                    var t1 = Task.Run(() => mongo.delete(obj));
+                    await Task.WhenAll(t1);
+                    Recid = t1.Status == TaskStatus.RanToCompletion ? t1.Result : null;
+
+                    //obj.MongodbId = Recid;
+                    var t2 = Task.Run(() => dbOnboard.PostdbOnboarDocument(obj));
+                    await Task.WhenAll(t2);
+                    Recid = t2.Status == TaskStatus.RanToCompletion ? t2.Result : null;
+
+                    if (Recid != null && Recid != 0)
+                    {
+                        commonIUD.FinalMode = DBReturnInsertUpdateDelete.DELETE;
+                        commonIUD.Message = "Document Updated Successfully!"; 
+                        commonIUD.AdditionalParameter = "";
+                        //return commonIUD;
+                    }
+                    else
+                    {
+
+                        commonIUD.FinalMode = DBReturnInsertUpdateDelete.ERROR;
+                        //return commonIUD;
+                    }
+                }
+
                 return commonIUD;
             }
             catch (Exception ex)

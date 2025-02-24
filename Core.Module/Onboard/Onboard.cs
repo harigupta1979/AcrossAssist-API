@@ -47,4 +47,10 @@ namespace Core.Module.Onboard
         public string EmailId { get; set; }
         public Nullable<Int64> OnBoardId { get; set; }
     }
+    public class OnboardDocSearch : commonSearchClass
+    {
+        public Nullable<Int64> OnBoardId { get; set; }
+        public Nullable<Int64> DocumentId { get; set; }
+        
+    }
 }
