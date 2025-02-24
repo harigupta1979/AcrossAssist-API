@@ -78,7 +78,7 @@ namespace BusinessLogic.Master
                 await Task.WhenAll(t1);
                 string WhereCond = t1.Status == TaskStatus.RanToCompletion ? t1.Result : null;
 
-                var t2 = Task.Run(() => dbCommon.DynamicQuery("DealerService", WhereCond));
+                var t2 = Task.Run(() => dbCommon.DynamicQuery("service", WhereCond));
                 await Task.WhenAll(t2);
                 dt = t2.Status == TaskStatus.RanToCompletion ? t2.Result : null;
 
